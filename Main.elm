@@ -15,7 +15,7 @@ main =
 
 
 type alias Model =
-    { dimension : Int
+    { dimension : Float
     , time : Maybe Time
     }
 
@@ -35,7 +35,7 @@ init =
 
 type Msg
     = Tick Time
-    | DimensionChange Int
+    | DimensionChange Float
 
 
 
@@ -44,20 +44,21 @@ type Msg
 
 view : Model -> Html Msg
 view model =
-    div
-        [ style
-            [ "background-color" => "black"
-            , "width" => toString model.dimension ++ "px"
-            , "height" => toString model.dimension ++ "px"
-            , "text-align" => "center"
-            , "margin-left" => "auto"
-            , "margin-right" => "auto"
-            , "postion" => "absolute"
-            , "margin-top" => "10%"
-            , "border" => "0"
+    div [ style [ "postion" => "relative" ] ]
+        [ div
+            [ style
+                [ "background-color" => "black"
+                , "width" => toString model.dimension ++ "px"
+                , "height" => toString model.dimension ++ "px"
+                , "text-align" => "center"
+                , "position" => "absolute"
+                , "top" => "50%"
+                , "margin-left" => "50%"
+                , "border" => "0"
+                ]
             ]
+            []
         ]
-        []
 
 
 
@@ -70,13 +71,16 @@ update msg model =
         DimensionChange dimension ->
             model ! []
 
-        Tick _ ->
-            { model | dimension = model.dimension - 3 } ! []
+        Tick time ->
+            if time |> inMilliseconds |> isMultipleOf100 then
+                { model | dimension = model.dimension - 0.5 } ! []
+            else
+                model ! []
 
 
 isMultipleOf100 : Float -> Bool
 isMultipleOf100 float =
-    round float % 100 == 0
+    round float % 10 == 0
 
 
 
